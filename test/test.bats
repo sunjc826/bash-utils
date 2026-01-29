@@ -73,8 +73,8 @@ __test_cmd_empty() { BU_RET=""; }
 __test_cmd_failing() { BU_RET="test"; return 42; }
 
 # Helper functions for bu_stdout_to_ret tests
-__test_stdout_hello() { echo -n "hello"; }
-__test_stdout_world() { echo -n "world"; }
+__test_stdout_hello() { echo "hello"; }
+__test_stdout_world() { echo "world"; }
 __test_stdout_words() { echo "one two three"; }
 __test_stdout_lines() { printf "line1\nline2\nline3\n"; }
 __test_stdout_multiline() { printf "line1\nline2\nline3"; }
