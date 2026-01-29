@@ -420,7 +420,7 @@ bu_def_source()
             source_filepath=$basename
         fi
 
-        if "$BU_SOURCE_IS_INLINE"
+        if [[ "$BU_SOURCE_IS_INLINE" = true ]]
         then
             if ! "$is_no_inline"
             then
