@@ -119,27 +119,33 @@ function test_bu_ret_to_stdout { #@test
 }
 
 # Tests for bu_stdout_to_ret
-function test_bu_stdout_to_ret { #@test
+function test_bu_stdout_to_ret_str { #@test
     # Test --str mode
     bu_stdout_to_ret --str __test_stdout_hello
     assert_equal "$BU_RET" "hello"
-    
+}
+
+function test_bu_stdout_to_ret_spaces { #@test
     # Test default mode (same as --spaces)
     bu_stdout_to_ret __test_stdout_world
     assert_equal "$BU_RET" "world"
-    
+
     # Test --spaces with multiple words
     bu_stdout_to_ret --spaces __test_stdout_words
     assert_equal "${BU_RET[0]}" "one"
     assert_equal "${BU_RET[1]}" "two"
     assert_equal "${BU_RET[2]}" "three"
-    
+}
+
+function test_bu_stdout_to_ret_lines { #@test
     # Test --lines mode
     bu_stdout_to_ret --lines __test_stdout_lines
     assert_equal "${BU_RET[0]}" "line1"
     assert_equal "${BU_RET[1]}" "line2"
     assert_equal "${BU_RET[2]}" "line3"
-    
+}
+
+function test_bu_stdout_to_ret { #@test
     # Test custom outparam with short form
     bu_stdout_to_ret --str -o MY_VAR __test_stdout_hello
     assert_equal "$MY_VAR" "hello"
