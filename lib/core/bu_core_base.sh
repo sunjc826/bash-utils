@@ -230,19 +230,18 @@ bu_stdout_to_ret()
             is_proc=true
         fi
     fi
-
-    local -n outparam=$outparam_name
+    local -n __bu_stdout_to_ret_outvar=$outparam_name
     local exit_code=
     case "$mode" in
     str)
         if "$is_proc"
         then
-            outparam=
+            __bu_stdout_to_ret_outvar=
             "$@" >&"$BU_PROC_FIFO_FD"
             exit_code=$?
             read -r "${outparam_name?}" <&"$BU_PROC_FIFO_FD"
         else
-            outparam=$("$@")
+            __bu_stdout_to_ret_outvar=$("$@")
             exit_code=$?
         fi
         ;;
@@ -251,19 +250,19 @@ bu_stdout_to_ret()
         # For multiline output, is_proc=true will only process the first line
         if "$is_proc"
         then
-            outparam=()
+            __bu_stdout_to_ret_outvar=()
             "$@" >&"$BU_PROC_FIFO_FD"
             exit_code=$?
             read -r -a "${outparam_name?}" <&"$BU_PROC_FIFO_FD"
         else
-            outparam=($("$@"))
+            __bu_stdout_to_ret_outvar=($("$@"))
             exit_code=$?
         fi
         ;;
     lines)
         if "$is_proc"
         then
-            outparam=()
+            __bu_stdout_to_ret_outvar=()
             "$@" >&"$BU_PROC_FILE_FD"
             exit_code=$?
             mapfile -t "$outparam_name" <&"$BU_PROC_FILE_FD"
@@ -483,13 +482,13 @@ bu_cached_keyed_execute()
 # ```
 __bu_setup_tput()
 {
-    local -n outvar=$1
+    local -n __bu_setup_tput_outvar=$1
     shift
     local joined_cmd=$*
     # Note that the --str --proc mode will lock up at the `read` if there is no newline.
     # tput functions don't make a newline, so we avoid the --proc mode in all cases, WSL or not. 
     bu_cached_keyed_execute --str tput_"${joined_cmd// /_}" bu_stdout_to_ret --no-proc --str tput "$@" 2>/dev/null
-    outvar=$BU_RET
+    __bu_setup_tput_outvar=$BU_RET
 }
 
 BU_TPUT_UNDERLINE=
