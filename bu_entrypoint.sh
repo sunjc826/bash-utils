@@ -3,6 +3,7 @@ case "${BASH_SOURCE}" in
 *) pushd . &>/dev/null ;; # This seems like duplicate work but we need to match the popd later
 esac
 
+declare -a -g BU_RET=()
 declare -A -g BU_RET_MAP=()
 
 BU_REPO_DIR_PREV=$BU_REPO_DIR

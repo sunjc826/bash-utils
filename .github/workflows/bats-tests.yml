@@ -29,8 +29,4 @@ jobs:
 
       - name: Run BATS tests
         run: |
-          # Source the activate script with test environment
-          source ./activate -t
-
-          # Run tests with parallel execution
-          bats --jobs "$((($(nproc) + 1) / 2))" ./test/test.bats
+          ./bu_run_tests.sh
