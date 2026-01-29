@@ -53,7 +53,7 @@ __bu_exit_handler_simple()
 trap 'BU_ERR_LINENO=$LINENO; BU_ERR_COMMAND=$BASH_COMMAND' ERR
 trap __bu_exit_handler_simple EXIT
 
-set -ex
+set -e
 source ./bu_entrypoint.sh
 
 # Get access to the bats binary
@@ -62,5 +62,5 @@ bu_env_append_path "$BU_DIR"/test/bats/bin
 # Run .bats tests
 bu_env_append_path "$BU_DIR"/test
 
-set +ex
+set +e
 popd &>/dev/null
