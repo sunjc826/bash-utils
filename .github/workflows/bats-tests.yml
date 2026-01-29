@@ -30,6 +30,8 @@ jobs:
       - name: Run BATS tests
         # Problem: https://github.com/actions/runner/issues/241
         # Solution: https://github.com/gfx/example-github-actions-with-tty?tab=readme-ov-file
-        shell: 'TERM=xterm-256color script -q -e -c "bash {0}"'
+        shell: 'script -q -e -c "bash {0}" /dev/null'
+        env:
+          TERM: xterm-256color
         run: |
           ./bu_run_tests.sh
