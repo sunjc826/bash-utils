@@ -105,7 +105,6 @@ BU_PROC_FILE=$BU_PROC_DIR/scratch.txt
 # Use an fd to further reduce overhead
 # TODO: Think about fds leaking if we re-source the file, e.g. when overridding source-once
 BU_PROC_FIFO_FD=
-BU_PROC_FILE_FD=
 # Probably have some kind of cleanup policy
 if [[ ! -e "$BU_PROC_DIR" ]]
 then
@@ -116,7 +115,6 @@ then
     mkfifo "$BU_PROC_FIFO"
 fi
 exec {BU_PROC_FIFO_FD}<>"$BU_PROC_FIFO"
-exec {BU_PROC_FILE_FD}<>"$BU_PROC_FILE"
 
 # Detect if we are in WSL
 BU_ENV_IS_WSL=
@@ -239,7 +237,8 @@ bu_stdout_to_ret()
             __bu_stdout_to_ret_outvar=
             "$@" >&"$BU_PROC_FIFO_FD"
             exit_code=$?
-            read -r "${outparam_name?}" <&"$BU_PROC_FIFO_FD"
+            # We must have a newline, we assume that a non-zero exit code does not guarantee a newline
+            (( exit_code == 0 )) && read -r "${outparam_name?}" <&"$BU_PROC_FIFO_FD"
         else
             __bu_stdout_to_ret_outvar=$("$@")
             exit_code=$?
@@ -263,9 +262,9 @@ bu_stdout_to_ret()
         if "$is_proc"
         then
             __bu_stdout_to_ret_outvar=()
-            "$@" >&"$BU_PROC_FILE_FD"
+            "$@" >"$BU_PROC_FILE"
             exit_code=$?
-            mapfile -t "$outparam_name" <&"$BU_PROC_FILE_FD"
+            mapfile -t "$outparam_name" <"$BU_PROC_FILE"
         else
             local fd
             exec {fd}< <("$@")
