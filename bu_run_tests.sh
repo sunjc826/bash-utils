@@ -8,4 +8,5 @@ esac
 source ./activate -t
 
 # Run tests with parallel execution
-bats --jobs "$((($(nproc) + 1) / 2))" ./test/test.bats
+# bats --jobs "$((($(nproc) + 1) / 2))" ./test/test.bats
+bats ./test/test.bats
